@@ -438,11 +438,10 @@ div.appendChild(details);
   link.className = "kaart-knop";
 link.addEventListener("click", e => e.stopPropagation());
   kop.appendChild(link);
-}
-      lijst.appendChild(div);
-    }
+        }
+    lijst.appendChild(div);
   }
-  $("loginForm").addEventListener("submit", async e => {
+$("loginForm").addEventListener("submit", async e => {
     e.preventDefault();
     status("Bezig met inloggen...");
 
