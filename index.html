@@ -301,6 +301,20 @@ $("opgelosteMeldingen").textContent =
   }
 
   function toonMeldingen(meldingen) {
+    meldingen = [...meldingen].sort((a, b) => {
+  const nummerA = String(a.mor_nummer ?? "").trim();
+  const nummerB = String(b.mor_nummer ?? "").trim();
+
+  // Meldingen zonder MOR-nummer komen onderaan.
+  if (!nummerA && nummerB) return 1;
+  if (nummerA && !nummerB) return -1;
+
+  // Sorteer MOR-nummers numeriek, dus MOR789 vóór MOR5142.
+  return nummerA.localeCompare(nummerB, "nl", {
+    numeric: true,
+    sensitivity: "base"
+  });
+});
     const lijst = $("meldingen");
     lijst.replaceChildren();
 
