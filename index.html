@@ -141,20 +141,32 @@
   <section id="overzicht" class="kaart" hidden>
     <h2>Verkeersmeldingen</h2>
     <p>Welkom bij het beveiligde meldingenoverzicht.</p>
-    <div id="statistieken" class="statistieken">
+   <div id="statistieken" class="statistieken">
   <div class="statistiek">
     <strong id="totaalMeldingen">0</strong>
     <span>Totaal meldingen</span>
   </div>
 
   <div class="statistiek">
-    <strong id="openMeldingen">0</strong>
-    <span>Open</span>
+    <strong id="gemeenteAfgehandeld">0</strong>
+    <span>Gemeente afgehandeld</span>
   </div>
 
   <div class="statistiek">
     <strong id="opgelosteMeldingen">0</strong>
-    <span>Opgelost</span>
+    <span>Rijscholen opgelost</span>
+  </div>
+</div>
+
+<div class="statistieken">
+  <div class="statistiek">
+    <strong id="openMeldingen">0</strong>
+    <span>Open volgens rijschoolhouders</span>
+  </div>
+
+  <div class="statistiek">
+    <strong id="nieuweMeldingen">0</strong>
+    <span>Nieuw – nog te melden</span>
   </div>
 </div>
    <button id="logoutButton" type="button">Uitloggen</button>
@@ -243,7 +255,14 @@
 
     alleMeldingen = data ?? [];
       const totaal = alleMeldingen.length;
-
+      const nieuw = alleMeldingen.filter(melding =>
+  !String(melding.mor_nummer ?? "").trim()
+).length;
+const gemeenteAfgehandeld = alleMeldingen.filter(melding =>
+  String(melding.status_gemeente ?? "")
+    .trim()
+    .toLowerCase() === "afgehandeld"
+).length;
 const open = alleMeldingen.filter(melding =>
   String(melding.status_rijscholen ?? "")
     .trim()
@@ -257,8 +276,12 @@ const opgelost = alleMeldingen.filter(melding =>
 ).length;
 
 $("totaalMeldingen").textContent = totaal;
+      $("nieuweMeldingen").textContent = nieuw;
 $("openMeldingen").textContent = open;
-$("opgelosteMeldingen").textContent = opgelost;
+$("gemeenteAfgehandeld").textContent =
+  gemeenteAfgehandeld + "/" + totaal;
+$("opgelosteMeldingen").textContent =
+  opgelost + "/" + totaal;
     $("zoeken").dispatchEvent(new Event("input"));
   }
 
