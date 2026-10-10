@@ -119,6 +119,42 @@
 .melding summary {
   cursor: pointer;
 }
+    .melding summary {
+  position: relative;
+  padding-right: 180px;
+  min-height: 95px;
+}
+
+.kaart-knop {
+  position: absolute;
+  right: 0;
+  top: 10px;
+  display: inline-block;
+  background: #174b70;
+  color: white;
+  padding: 10px 14px;
+  border-radius: 7px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.kaart-knop:hover {
+  background: #23658f;
+}
+
+@media (max-width: 600px) {
+  .melding summary {
+    padding-right: 0;
+    padding-bottom: 48px;
+  }
+
+  .kaart-knop {
+    top: auto;
+    bottom: 5px;
+    right: 0;
+  }
+}
   </style>
 </head>
 <body>
@@ -394,12 +430,15 @@ for (const [naam, waarde] of velden) {
 
 div.appendChild(details);
       if (melding.maps_link) {
-        const link = document.createElement("a");
-        link.href = melding.maps_link;
-        link.textContent = "Bekijk op Google Maps";
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
-        div.appendChild(link);
+  const link = document.createElement("a");
+  link.href = melding.maps_link;
+  link.textContent = "📍 Bekijk op kaart";
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.className = "kaart-knop";
+link.addEventListener("click", e => e.stopPropagation());
+  kop.appendChild(link);
+}
       }
 
       lijst.appendChild(div);
