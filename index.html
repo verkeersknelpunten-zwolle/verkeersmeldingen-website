@@ -116,7 +116,18 @@
 
   const $ = id => document.getElementById(id);
   let recoveryMode = false;
+  let alleMeldingen = [];
 
+  $("zoeken").addEventListener("input", () => {
+    const zoekterm = $("zoeken").value.toLowerCase().trim();
+
+    const resultaten = alleMeldingen.filter(melding =>
+      String(melding.mor_nummer ?? "").toLowerCase().includes(zoekterm) ||
+      String(melding.locatie ?? "").toLowerCase().includes(zoekterm)
+    );
+
+    toonMeldingen(resultaten);
+  });
   function status(tekst, fout = false) {
     $("status").textContent = tekst;
     $("status").className = fout ? "fout" : "";
@@ -153,7 +164,7 @@
     await laadMeldingen();
   }
 
-  async function laadMeldingen() {
+    async function laadMeldingen() {
     const { data, error } = await supabase
       .from("meldingen")
       .select("*");
@@ -163,34 +174,52 @@
       return;
     }
 
+    alleMeldingen = data ?? [];
+    $("zoeken").dispatchEvent(new Event("input"));
+  }
+
+  function toonMeldingen(meldingen) {
     const lijst = $("meldingen");
     lijst.replaceChildren();
 
-    if (!data?.length) {
-      lijst.textContent = "Er zijn nog geen meldingen.";
+    if (!meldingen.length) {
+      lijst.textContent = "Geen meldingen gevonden.";
       return;
     }
 
-    for (const melding of data) {
+    for (const melding of meldingen) {
       const div = document.createElement("div");
       div.className = "melding";
 
-      for (const [veld, waarde] of Object.entries(melding)) {
-        const regel = document.createElement("p");
-        const naam = document.createElement("strong");
-        naam.textContent = veld + ": ";
-        regel.append(naam, document.createTextNode(
-          waarde === null ? "" :
-          typeof waarde === "object" ? JSON.stringify(waarde) :
-          String(waarde)
-        ));
-        div.appendChild(regel);
+      const titel = document.createElement("h3");
+      titel.textContent =
+        (melding.mor_nummer || "Geen MOR-nummer") +
+        " – " + (melding.locatie || "Locatie onbekend");
+
+      const gemeente = document.createElement("p");
+      gemeente.textContent =
+        "Status gemeente: " +
+        (melding.status_gemeente || "Onbekend");
+
+      const rijscholen = document.createElement("p");
+      rijscholen.textContent =
+        "Status rijscholen: " +
+        (melding.status_rijscholen || "Onbekend");
+
+      div.append(titel, gemeente, rijscholen);
+
+      if (melding.maps_link) {
+        const link = document.createElement("a");
+        link.href = melding.maps_link;
+        link.textContent = "Bekijk op Google Maps";
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        div.appendChild(link);
       }
 
       lijst.appendChild(div);
     }
   }
-
   $("loginForm").addEventListener("submit", async e => {
     e.preventDefault();
     status("Bezig met inloggen...");
