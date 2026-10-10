@@ -310,17 +310,20 @@
   !String(melding.mor_nummer ?? "").trim()
 ).length;
 const gemeenteAfgehandeld = alleMeldingen.filter(melding =>
+  String(melding.mor_nummer ?? "").trim() !== "" &&
   String(melding.status_gemeente ?? "")
     .trim()
     .toLowerCase() === "afgehandeld"
 ).length;
 const open = alleMeldingen.filter(melding =>
+  String(melding.mor_nummer ?? "").trim() !== "" &&
   String(melding.status_rijscholen ?? "")
     .trim()
     .toLowerCase() === "open"
 ).length;
 
 const opgelost = alleMeldingen.filter(melding =>
+  String(melding.mor_nummer ?? "").trim() !== "" &&
   String(melding.status_rijscholen ?? "")
     .trim()
     .toLowerCase() === "opgelost"
@@ -441,6 +444,8 @@ link.addEventListener("click", e => e.stopPropagation());
         }
     lijst.appendChild(div);
   }
+  }
+
 $("loginForm").addEventListener("submit", async e => {
     e.preventDefault();
     status("Bezig met inloggen...");
@@ -532,9 +537,11 @@ $("loginForm").addEventListener("submit", async e => {
     if (!recoveryMode) await controleerToegang();
   }
 
-  await start();
+  start().catch(error => {
+    console.error("Opstarten mislukt:", error);
+    toon("login");
+    status("De website kon niet worden gestart: " + error.message, true);
+  });
 </script>
 </body>
 </html>
-
-    
