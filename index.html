@@ -208,10 +208,13 @@
     }
 
     for (const melding of meldingen) {
-      const div = document.createElement("div");
-      div.className = "melding";
+      const div = document.createElement("details");
+div.className = "melding";
 
-      const titel = document.createElement("h3");
+const kop = document.createElement("summary");
+div.appendChild(kop);
+
+     const titel = document.createElement("span");
       titel.textContent =
         (melding.mor_nummer || "Geen MOR-nummer") +
         " – " + (melding.locatie || "Locatie onbekend");
@@ -243,8 +246,31 @@
 
       geefStatusKleur(gemeente, melding.status_gemeente);
       geefStatusKleur(rijscholen, melding.status_rijscholen);
-      div.append(titel, gemeente, rijscholen);
+      kop.append(titel, gemeente, rijscholen);
+const details = document.createElement("div");
 
+const velden = [
+  ["Omschrijving", melding.omschrijving],
+  ["Meldingsdatum", melding.meldingsdatum],
+  ["Reactie gemeente", melding.reactie_gemeente],
+  ["Opmerking", melding.opmerking],
+  ["Laatst gecontroleerd", melding.laatst_gecontroleerd]
+];
+
+for (const [naam, waarde] of velden) {
+  if (waarde === null || waarde === undefined || waarde === "") {
+    continue;
+  }
+
+  const regel = document.createElement("p");
+  const label = document.createElement("strong");
+
+  label.textContent = naam + ": ";
+  regel.append(label, document.createTextNode(String(waarde)));
+  details.appendChild(regel);
+}
+
+div.appendChild(details);
       if (melding.maps_link) {
         const link = document.createElement("a");
         link.href = melding.maps_link;
