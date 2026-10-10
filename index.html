@@ -12,6 +12,286 @@
       background: #f4f6f8;
       color: #253244;
     }
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verkeersknelpunten Zwolle</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      color: #253244;
+    }
+    header {
+      background: #174b70;
+      color: white;
+      text-align: center;
+      padding: 32px 20px;
+    }
+    main {
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    .kaart {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px #00000012;
+      margin-bottom: 20px;
+    }
+    input {
+      display: block;
+      box-sizing: border-box;
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0 16px;
+      border: 1px solid #aab8c8;
+      border-radius: 6px;
+    }
+    button {
+      background: #174b70;
+      color: white;
+      border: 0;
+      border-radius: 6px;
+      padding: 12px 16px;
+      cursor: pointer;
+      margin: 4px 8px 4px 0;
+    }
+    button:disabled { opacity: .6; }
+    .fout { color: #b42318; }
+    .melding {
+      border-top: 1px solid #ddd;
+      padding: 14px 0;
+      overflow-wrap: anywhere;
+    }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Verkeersknelpunten Zwolle</h1>
+  <p>Overzicht van verkeersmeldingen en knelpunten</p>
+</header>
+
+<main>
+  <section id="login" class="kaart">
+    <h2>Inloggen voor toegelaten rijscholen</h2>
+    <p>Alleen goedgekeurde gebruikers kunnen meldingen bekijken.</p>
+    <form id="loginForm">
+      <label for="email">E-mailadres</label>
+      <input id="email" type="email" required autocomplete="email">
+      <label for="password">Wachtwoord</label>
+      <input id="password" type="password" required autocomplete="current-password">
+      <button type="submit">Inloggen</button>
+    </form>
+    <button id="resetButton" type="button">Wachtwoord vergeten?</button>
+  </section>
+
+  <section id="nieuwWachtwoord" class="kaart" hidden>
+    <h2>Nieuw wachtwoord instellen</h2>
+    <form id="resetForm">
+      <label for="newPassword">Nieuw wachtwoord</label>
+      <input id="newPassword" type="password" minlength="8" required>
+      <button type="submit">Wachtwoord opslaan</button>
+    </form>
+  </section>
+
+  <section id="overzicht" class="kaart" hidden>
+    <h2>Verkeersmeldingen</h2>
+    <p>Welkom bij het beveiligde meldingenoverzicht.</p>
+    <button id="logoutButton" type="button">Uitloggen</button>
+    <div id="meldingen"></div>
+  </section>
+
+  <p id="status" role="status" aria-live="polite"></p>
+</main>
+
+<script type="module">
+  import { createClient } from
+    "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+  const supabase = createClient(
+    "https://jypxrrtbwvvjladdytzh.supabase.co",
+    "sb_publishable_ZCeyC6XuEO6c2CeSRVh8rw_gmYPg0ri"
+  );
+
+  const $ = id => document.getElementById(id);
+  let recoveryMode = false;
+
+  function status(tekst, fout = false) {
+    $("status").textContent = tekst;
+    $("status").className = fout ? "fout" : "";
+  }
+
+  function toon(scherm) {
+    for (const id of ["login", "nieuwWachtwoord", "overzicht"]) {
+      $(id).hidden = id !== scherm;
+    }
+  }
+
+  async function controleerToegang() {
+    const { data: { user }, error } = await supabase.auth.getUser();
+
+    if (error || !user) {
+      toon("login");
+      return;
+    }
+
+    const { data, error: toegangFout } = await supabase
+      .from("toegestane_gebruikers")
+      .select("gebruiker_id")
+      .eq("gebruiker_id", user.id)
+      .maybeSingle();
+
+    if (toegangFout || !data) {
+      toon("login");
+      status("Je account is nog niet goedgekeurd.", true);
+      return;
+    }
+
+    toon("overzicht");
+    status("");
+    await laadMeldingen();
+  }
+
+  async function laadMeldingen() {
+    const { data, error } = await supabase
+      .from("meldingen")
+      .select("*");
+
+    if (error) {
+      status("Meldingen ophalen mislukt: " + error.message, true);
+      return;
+    }
+
+    const lijst = $("meldingen");
+    lijst.replaceChildren();
+
+    if (!data?.length) {
+      lijst.textContent = "Er zijn nog geen meldingen.";
+      return;
+    }
+
+    for (const melding of data) {
+      const div = document.createElement("div");
+      div.className = "melding";
+
+      for (const [veld, waarde] of Object.entries(melding)) {
+        const regel = document.createElement("p");
+        const naam = document.createElement("strong");
+        naam.textContent = veld + ": ";
+        regel.append(naam, document.createTextNode(
+          waarde === null ? "" :
+          typeof waarde === "object" ? JSON.stringify(waarde) :
+          String(waarde)
+        ));
+        div.appendChild(regel);
+      }
+
+      lijst.appendChild(div);
+    }
+  }
+
+  $("loginForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    status("Bezig met inloggen...");
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email: $("email").value.trim(),
+      password: $("password").value
+    });
+
+    if (error) {
+      status("Inloggen mislukt. Controleer je gegevens.", true);
+      return;
+    }
+
+    $("password").value = "";
+    await controleerToegang();
+  });
+
+  $("resetButton").addEventListener("click", async () => {
+    const email = $("email").value.trim();
+
+    if (!email) {
+      status("Vul eerst je e-mailadres in.", true);
+      return;
+    }
+
+    const redirectTo =
+      window.location.origin + window.location.pathname;
+
+    const { error } = await supabase.auth.resetPasswordForEmail(
+      email, { redirectTo }
+    );
+
+    status(error
+      ? "Herstelmail aanvragen mislukt: " + error.message
+      : "Als dit account bestaat, ontvang je een herstelmail.",
+      !!error
+    );
+  });
+
+  $("resetForm").addEventListener("submit", async e => {
+    e.preventDefault();
+
+    const { error } = await supabase.auth.updateUser({
+      password: $("newPassword").value
+    });
+
+    if (error) {
+      status("Wachtwoord wijzigen mislukt: " + error.message, true);
+      return;
+    }
+
+    recoveryMode = false;
+    $("newPassword").value = "";
+    await supabase.auth.signOut();
+    history.replaceState(null, "", location.pathname);
+    toon("login");
+    status("Wachtwoord gewijzigd. Je kunt nu inloggen.");
+  });
+
+  $("logoutButton").addEventListener("click", async () => {
+    await supabase.auth.signOut();
+    toon("login");
+    status("Je bent uitgelogd.");
+  });
+
+  supabase.auth.onAuthStateChange((event) => {
+    if (event === "PASSWORD_RECOVERY") {
+      recoveryMode = true;
+      toon("nieuwWachtwoord");
+      status("Kies een nieuw wachtwoord.");
+    }
+  });
+
+  async function start() {
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+      toon("login");
+      return;
+    }
+
+    // Geef Supabase tijd om een herstel-link te verwerken.
+    if (location.hash.includes("type=recovery") ||
+        location.search.includes("code=")) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+
+    if (!recoveryMode) await controleerToegang();
+  }
+
+  await start();
+</script>
+</body>
+</html>
+
     header {
       background: #174b70;
       color: white;
