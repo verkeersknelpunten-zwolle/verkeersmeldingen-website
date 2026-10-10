@@ -107,6 +107,18 @@
   }
 }
     [hidden] { display: none !important; }
+    .status-regels {
+  margin-top: 10px;
+}
+
+.status-regels p {
+  display: table;
+  margin: 8px 0;
+}
+
+.melding summary {
+  cursor: pointer;
+}
   </style>
 </head>
 <body>
@@ -255,6 +267,9 @@
 
     alleMeldingen = data ?? [];
       const totaal = alleMeldingen.length;
+      const totaalGemeente = alleMeldingen.filter(melding =>
+  String(melding.mor_nummer ?? "").trim() !== ""
+).length;
       const nieuw = alleMeldingen.filter(melding =>
   !String(melding.mor_nummer ?? "").trim()
 ).length;
@@ -279,9 +294,9 @@ $("totaalMeldingen").textContent = totaal;
       $("nieuweMeldingen").textContent = nieuw;
 $("openMeldingen").textContent = open;
 $("gemeenteAfgehandeld").textContent =
-  gemeenteAfgehandeld + "/" + totaal;
+  gemeenteAfgehandeld + "/" + totaalGemeente;
 $("opgelosteMeldingen").textContent =
-  opgelost + "/" + totaal;
+  opgelost + "/" + totaalGemeente;
     $("zoeken").dispatchEvent(new Event("input"));
   }
 
@@ -333,7 +348,13 @@ div.appendChild(kop);
 
       geefStatusKleur(gemeente, melding.status_gemeente);
       geefStatusKleur(rijscholen, melding.status_rijscholen);
-      kop.append(titel, gemeente, rijscholen);
+      kop.append(titel);
+
+const statusRegels = document.createElement("div");
+statusRegels.className = "status-regels";
+
+statusRegels.append(gemeente, rijscholen);
+kop.appendChild(statusRegels);
 const details = document.createElement("div");
 
 const velden = [
