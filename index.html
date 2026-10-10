@@ -75,6 +75,37 @@
   background: #e5e7eb;
   color: #374151;
 }
+    .statistieken {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.statistiek {
+  background: #edf3f8;
+  border-radius: 10px;
+  padding: 18px 10px;
+  text-align: center;
+}
+
+.statistiek strong {
+  display: block;
+  font-size: 30px;
+  color: #174b70;
+  margin-bottom: 6px;
+}
+
+.statistiek span {
+  font-size: 14px;
+  color: #253244;
+}
+
+@media (max-width: 600px) {
+  .statistieken {
+    grid-template-columns: 1fr;
+  }
+}
     [hidden] { display: none !important; }
   </style>
 </head>
@@ -110,6 +141,22 @@
   <section id="overzicht" class="kaart" hidden>
     <h2>Verkeersmeldingen</h2>
     <p>Welkom bij het beveiligde meldingenoverzicht.</p>
+    <div id="statistieken" class="statistieken">
+  <div class="statistiek">
+    <strong id="totaalMeldingen">0</strong>
+    <span>Totaal meldingen</span>
+  </div>
+
+  <div class="statistiek">
+    <strong id="openMeldingen">0</strong>
+    <span>Open</span>
+  </div>
+
+  <div class="statistiek">
+    <strong id="opgelosteMeldingen">0</strong>
+    <span>Opgelost</span>
+  </div>
+</div>
    <button id="logoutButton" type="button">Uitloggen</button>
 
 <label for="zoeken">Zoeken op straatnaam of MOR-nummer</label>
@@ -195,6 +242,23 @@
     }
 
     alleMeldingen = data ?? [];
+      const totaal = alleMeldingen.length;
+
+const open = alleMeldingen.filter(melding =>
+  String(melding.status_rijscholen ?? "")
+    .trim()
+    .toLowerCase() === "open"
+).length;
+
+const opgelost = alleMeldingen.filter(melding =>
+  String(melding.status_rijscholen ?? "")
+    .trim()
+    .toLowerCase() === "opgelost"
+).length;
+
+$("totaalMeldingen").textContent = totaal;
+$("openMeldingen").textContent = open;
+$("opgelosteMeldingen").textContent = opgelost;
     $("zoeken").dispatchEvent(new Event("input"));
   }
 
