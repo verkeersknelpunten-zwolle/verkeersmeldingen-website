@@ -180,6 +180,30 @@
     </form>
   </section>
 
+  <section id="meldingFormulierSectie" class="kaart" hidden>
+  <h2>Nieuwe verkeersmelding</h2>
+  <p>Vul de gegevens van het verkeersknelpunt in.</p>
+
+  <form id="meldingFormulier">
+    <label for="meldingLocatie">Locatie *</label>
+    <input id="meldingLocatie" type="text" required>
+
+    <label for="meldingOmschrijving">Omschrijving *</label>
+    <textarea id="meldingOmschrijving" required
+      style="width:100%; box-sizing:border-box; min-height:100px; padding:12px;"></textarea>
+
+    <label for="meldingMapsLink">Google Maps-link *</label>
+    <input id="meldingMapsLink" type="url" required>
+
+    <label for="meldingDatum">Datum melding *</label>
+    <input id="meldingDatum" type="date" required>
+
+    <button type="submit">Melding opslaan</button>
+    <button type="button" id="annuleerMelding">Annuleren</button>
+  </form>
+
+  <p id="meldingFormulierStatus"></p>
+</section>
   <section id="overzicht" class="kaart" hidden>
     <h2>Verkeersmeldingen</h2>
     <p>Welkom bij het beveiligde meldingenoverzicht.</p>
@@ -211,7 +235,8 @@
     <span>Nieuw – nog te melden</span>
   </div>
 </div>
-   <button id="logoutButton" type="button">Uitloggen</button>
+   <button id="nieuweMeldingButton" type="button">➕ Nieuwe melding</button>
+    <button id="logoutButton" type="button">Uitloggen</button>
 
 <label for="zoeken">Zoeken op straatnaam of MOR-nummer</label>
 <input
