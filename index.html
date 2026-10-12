@@ -120,40 +120,33 @@
   cursor: pointer;
 }
     .melding summary {
-  position: relative;
-  padding-right: 180px;
-  min-height: 95px;
+    position: relative;
+    padding-right: 0;
+    min-height: 0;
 }
 
 .kaart-knop {
-  position: absolute;
-  right: 0;
-  top: 10px;
-  display: inline-block;
-  background: #174b70;
-  color: white;
-  padding: 10px 14px;
-  border-radius: 7px;
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: bold;
+    position: static;
+    display: inline-block;
+    background: #174b70;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 7px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: bold;
+    margin: 12px 0 20px 0;
 }
 
 .kaart-knop:hover {
-  background: #23658f;
+    background: #23658f;
 }
 
 @media (max-width: 600px) {
-  .melding summary {
-    padding-right: 0;
-    padding-bottom: 48px;
-  }
-
-  .kaart-knop {
-    top: auto;
-    bottom: 5px;
-    right: 0;
-  }
+    .melding summary {
+        padding-right: 0;
+        padding-bottom: 0;
+    }
 }
   </style>
 </head>
@@ -441,7 +434,7 @@ div.appendChild(details);
   link.className = "kaart-knop";
        link.style.cssText = "display: table; float: none; margin: 12px 0 20px 0; clear: both;";
 link.addEventListener("click", e => e.stopPropagation());
-  details.insertBefore(link, details.firstChild);
+  div.insertBefore(link, details);
         }
     if (melding.reactie_pdf) {
   const pdfKnop = document.createElement("button");
