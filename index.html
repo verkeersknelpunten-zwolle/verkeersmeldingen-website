@@ -439,8 +439,9 @@ div.appendChild(details);
   link.target = "_blank";
   link.rel = "noopener noreferrer";
   link.className = "kaart-knop";
+       link.style.cssText = "display: table; float: none; margin: 12px 0 20px 0; clear: both;";
 link.addEventListener("click", e => e.stopPropagation());
-  kop.appendChild(link);
+  details.insertBefore(link, details.firstChild);
         }
     if (melding.reactie_pdf) {
   const pdfKnop = document.createElement("button");
