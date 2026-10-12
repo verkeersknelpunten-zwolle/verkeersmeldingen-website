@@ -442,7 +442,30 @@ div.appendChild(details);
 link.addEventListener("click", e => e.stopPropagation());
   kop.appendChild(link);
         }
-    lijst.appendChild(div);
+    if (melding.reactie_pdf) {
+  const pdfKnop = document.createElement("button");
+  pdfKnop.textContent = "📄 Bekijk reactie gemeente";
+  pdfKnop.type = "button";
+
+  pdfKnop.addEventListener("click", async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const { data, error } = await supabase.storage
+      .from("gemeente-reacties")
+      .createSignedUrl(melding.reactie_pdf, 60);
+
+    if (error) {
+      alert("De PDF kon niet worden geopend: " + error.message);
+      return;
+    }
+
+    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+  });
+
+  details.appendChild(pdfKnop);
+}
+lijst.appendChild(div);
   }
 }
 $("loginForm").addEventListener("submit", async e => {
