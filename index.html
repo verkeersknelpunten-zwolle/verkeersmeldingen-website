@@ -479,8 +479,7 @@ const kanteling = origineleLink.match(/,(-?\d+(?:\.\d+)?)t/);
 if (pano && locatie && kijkrichting && kanteling) {
   const pitch = 90 - Number(kanteling[1]);
 
-  const nieuweLink = new URL("https://www.google.com/maps/@");
-  nieuweLink.searchParams.set("api", "1");
+  const nieuweLink = new URL("https://www.google.com/maps/@?api=1");
   nieuweLink.searchParams.set("map_action", "pano");
   nieuweLink.searchParams.set("pano", pano[1]);
   nieuweLink.searchParams.set("viewpoint", locatie[1] + "," + locatie[2]);
