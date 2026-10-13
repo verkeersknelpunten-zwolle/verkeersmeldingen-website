@@ -400,12 +400,30 @@ input, textarea, button {
         ? datumB.localeCompare(datumA)
         : datumA.localeCompare(datumB);
     });
-  } else if (sorteerFilter === "mor") {
-    resultaten.sort((a, b) =>
-      String(a.mor_nummer ?? "").localeCompare(
-        String(b.mor_nummer ?? ""), "nl", { numeric: true }
-      )
-    );
+} else if (sorteerFilter.startsWith("mor-")) {
+  resultaten.sort((a, b) => {
+    const nummerA = String(a.mor_nummer ?? "").trim();
+    const nummerB = String(b.mor_nummer ?? "").trim();
+
+    const zonderA = nummerA === "";
+    const zonderB = nummerB === "";
+
+    if (zonderA !== zonderB) {
+      if (sorteerFilter === "mor-zonder-boven") {
+        return zonderA ? -1 : 1;
+      }
+      return zonderA ? 1 : -1;
+    }
+
+    const vergelijking = nummerA.localeCompare(nummerB, "nl", {
+      numeric: true,
+      sensitivity: "base"
+    });
+
+    return sorteerFilter === "mor-aflopend"
+      ? -vergelijking
+      : vergelijking;
+  });
   } else if (sorteerFilter === "locatie") {
     resultaten.sort((a, b) =>
       String(a.locatie ?? "").localeCompare(String(b.locatie ?? ""), "nl")
