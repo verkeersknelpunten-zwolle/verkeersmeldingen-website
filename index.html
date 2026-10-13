@@ -313,6 +313,25 @@ input, textarea, button {
   placeholder="Bijvoorbeeld Blaloweg of MOR790"
 >
 
+<div class="melding-filters">
+  <label for="statusFilter">Filter op status</label>
+  <select id="statusFilter">
+    <option value="alle">Alle meldingen</option>
+    <option value="niet-gemeld">Nog niet gemeld bij gemeente</option>
+    <option value="gemeente-open">Open bij gemeente</option>
+    <option value="gemeente-afgehandeld">Afgehandeld door gemeente</option>
+    <option value="rijscholen-open">Nog open volgens rijscholen</option>
+    <option value="rijscholen-opgelost">Afgehandeld volgens rijscholen</option>
+  </select>
+
+  <label for="sorteerFilter">Sorteren op</label>
+  <select id="sorteerFilter">
+    <option value="datum-nieuw">Meldingsdatum – nieuwste eerst</option>
+    <option value="datum-oud">Meldingsdatum – oudste eerst</option>
+    <option value="mor">MOR-nummer</option>
+    <option value="locatie">Locatie (A-Z)</option>
+  </select>
+</div>    
 <div id="meldingen"></div>
   </section>
 
