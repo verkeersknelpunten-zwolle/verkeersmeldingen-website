@@ -103,7 +103,22 @@
   color: #253244;
 }
 
-@media (max-width: 600px) {
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.kaart {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+input, textarea, button {
+  font-size: 16px;
+  max-width: 100%;
+}
+    @media (max-width: 600px) {
   .statistieken {
     grid-template-columns: 1fr;
   }
