@@ -351,16 +351,70 @@ input, textarea, button {
   let recoveryMode = false;
   let alleMeldingen = [];
 
-  $("zoeken").addEventListener("input", () => {
-    const zoekterm = $("zoeken").value.toLowerCase().trim();
+  function filterEnSorteerMeldingen() {
+  const zoekterm = $("zoeken").value.toLowerCase().trim();
+  const statusFilter = $("statusFilter").value;
+  const sorteerFilter = $("sorteerFilter").value;
 
-    const resultaten = alleMeldingen.filter(melding =>
+  const heeftMor = melding =>
+    String(melding.mor_nummer ?? "").trim() !== "";
+
+  const statusGemeente = melding =>
+    String(melding.status_gemeente ?? "").trim().toLowerCase();
+
+  const statusRijscholen = melding =>
+    String(melding.status_rijscholen ?? "").trim().toLowerCase();
+
+  const resultaten = alleMeldingen.filter(melding => {
+    const gevonden =
       String(melding.mor_nummer ?? "").toLowerCase().includes(zoekterm) ||
-      String(melding.locatie ?? "").toLowerCase().includes(zoekterm)
-    );
+      String(melding.locatie ?? "").toLowerCase().includes(zoekterm);
 
-    toonMeldingen(resultaten);
+    if (!gevonden) return false;
+
+    switch (statusFilter) {
+      case "niet-gemeld":
+        return !heeftMor(melding);
+      case "gemeente-open":
+        return heeftMor(melding) && statusGemeente(melding) === "open";
+      case "gemeente-afgehandeld":
+        return heeftMor(melding) && statusGemeente(melding) === "afgehandeld";
+      case "rijscholen-open":
+        return heeftMor(melding) && statusRijscholen(melding) === "open";
+      case "rijscholen-opgelost":
+        return heeftMor(melding) && statusRijscholen(melding) === "opgelost";
+      default:
+        return true;
+    }
   });
+
+  if (sorteerFilter === "datum-nieuw" || sorteerFilter === "datum-oud") {
+    resultaten.sort((a, b) => {
+      const datumA = a.meldingsdatum || "";
+      const datumB = b.meldingsdatum || "";
+
+      return sorteerFilter === "datum-nieuw"
+        ? datumB.localeCompare(datumA)
+        : datumA.localeCompare(datumB);
+    });
+  } else if (sorteerFilter === "mor") {
+    resultaten.sort((a, b) =>
+      String(a.mor_nummer ?? "").localeCompare(
+        String(b.mor_nummer ?? ""), "nl", { numeric: true }
+      )
+    );
+  } else if (sorteerFilter === "locatie") {
+    resultaten.sort((a, b) =>
+      String(a.locatie ?? "").localeCompare(String(b.locatie ?? ""), "nl")
+    );
+  }
+
+  toonMeldingen(resultaten);
+}
+
+$("zoeken").addEventListener("input", filterEnSorteerMeldingen);
+$("statusFilter").addEventListener("change", filterEnSorteerMeldingen);
+$("sorteerFilter").addEventListener("change", filterEnSorteerMeldingen);
   function status(tekst, fout = false) {
     $("status").textContent = tekst;
     $("status").className = fout ? "fout" : "";
@@ -442,24 +496,11 @@ $("gemeenteAfgehandeld").textContent =
   gemeenteAfgehandeld + "/" + totaalGemeente;
 $("opgelosteMeldingen").textContent =
   opgelost + "/" + totaalGemeente;
-    $("zoeken").dispatchEvent(new Event("input"));
+    filterEnSorteerMeldingen();
   }
 
   function toonMeldingen(meldingen) {
-    meldingen = [...meldingen].sort((a, b) => {
-  const nummerA = String(a.mor_nummer ?? "").trim();
-  const nummerB = String(b.mor_nummer ?? "").trim();
-
-  // Meldingen zonder MOR-nummer komen onderaan.
-  if (!nummerA && nummerB) return 1;
-  if (nummerA && !nummerB) return -1;
-
-  // Sorteer MOR-nummers numeriek, dus MOR789 vóór MOR5142.
-  return nummerA.localeCompare(nummerB, "nl", {
-    numeric: true,
-    sensitivity: "base"
-  });
-});
+    meldingen = [...meldingen];
     const lijst = $("meldingen");
     lijst.replaceChildren();
 
