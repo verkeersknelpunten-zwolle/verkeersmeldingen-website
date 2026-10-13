@@ -592,8 +592,7 @@ $("loginForm").addEventListener("submit", async e => {
   });
 
   $("nieuweMeldingButton").addEventListener("click", () => {
-  $("meldingFormulierSection").hidden = false;
-  $("overzicht").hidden = true;
+  toon("meldingFormulierSectie");
   $("meldingFormulierStatus").textContent = "";
 });
 
