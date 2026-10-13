@@ -591,6 +591,16 @@ $("loginForm").addEventListener("submit", async e => {
     status("Je bent uitgelogd.");
   });
 
+  $("nieuweMeldingButton").addEventListener("click", () => {
+  $("meldingFormulierSection").hidden = false;
+  $("overzicht").hidden = true;
+  $("meldingFormulierStatus").textContent = "";
+});
+
+$("annuleerMelding").addEventListener("click", () => {
+  $("meldingFormulierSection").hidden = true;
+  $("overzicht").hidden = false;
+});
   supabase.auth.onAuthStateChange((event) => {
     if (event === "PASSWORD_RECOVERY") {
       recoveryMode = true;
