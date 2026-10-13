@@ -207,6 +207,44 @@ input, textarea, button {
 #overzicht > h2,
 #overzicht > p {
   text-align: center;
+} 
+/* Grotere en duidelijkere filter- en sorteermenu's */
+.melding-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.melding-filters label {
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.melding-filters select {
+  display: block;
+  width: 100%;
+  max-width: 350px;
+  min-height: 46px;
+  padding: 10px 12px;
+  font-size: 16px;
+  border: 1px solid #aab8c8;
+  border-radius: 8px;
+  background: white;
+  color: #253244;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 600px) {
+  .melding-filters {
+    display: block;
+  }
+
+  .melding-filters select {
+    max-width: none;
+  }
 }    
 </style>
 </head>
