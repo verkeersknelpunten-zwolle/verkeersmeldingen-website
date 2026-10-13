@@ -165,7 +165,46 @@ input, textarea, button {
         padding-bottom: 0;
     }
 }
-  </style>
+  /* Nieuwe indeling van de statistieken */
+#statistieken {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#statistieken .gemeente-kader {
+  border: 2px solid #3285e5;
+  border-radius: 12px;
+  padding: 15px;
+}
+
+#statistieken .gemeente-kader h3,
+#statistieken .status-kader h4 {
+  margin: 0 0 12px;
+  color: #174b70;
+}
+
+#statistieken .gemeente-kader > p {
+  margin: 0 0 15px;
+}
+
+#statistieken .status-kader {
+  border: 2px solid #20a060;
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 12px;
+}
+
+#statistieken .statistiek {
+  margin-bottom: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#statistieken .status-kader .statistiek:last-child {
+  margin-bottom: 0;
+}
+</style>
 </head>
 <body>
 <header>
@@ -224,32 +263,41 @@ input, textarea, button {
     <h2>Verkeersmeldingen</h2>
     <p>Welkom bij het beveiligde meldingenoverzicht.</p>
    <div id="statistieken" class="statistieken">
-  <div class="statistiek">
-    <strong id="totaalMeldingen">0</strong>
-    <span>Totaal meldingen</span>
-  </div>
 
-  <div class="statistiek">
-    <strong id="gemeenteAfgehandeld">0</strong>
-    <span>Gemeente afgehandeld</span>
-  </div>
+  <div class="gemeente-kader">
+    <h3>Meldingen bekend bij gemeente</h3>
+    <p>Deze cijfers gaan over meldingen met een MOR-nummer.</p>
 
-  <div class="statistiek">
-    <strong id="opgelosteMeldingen">0</strong>
-    <span>Rijscholen opgelost</span>
-  </div>
-</div>
+    <div class="statistiek">
+      <strong id="totaalMeldingen">0</strong>
+      <span>Meldingen bekend bij gemeente</span>
+    </div>
 
-<div class="statistieken">
-  <div class="statistiek">
-    <strong id="openMeldingen">0</strong>
-    <span>Open volgens rijschoolhouders</span>
+    <div class="status-kader">
+      <h4>Status van deze meldingen</h4>
+
+      <div class="statistiek">
+        <strong id="gemeenteAfgehandeld">0</strong>
+        <span>Afgehandeld door gemeente</span>
+      </div>
+
+      <div class="statistiek">
+        <strong id="opgelosteMeldingen">0</strong>
+        <span>Afgehandeld volgens rijscholen</span>
+      </div>
+
+      <div class="statistiek">
+        <strong id="openMeldingen">0</strong>
+        <span>Nog open volgens rijscholen</span>
+      </div>
+    </div>
   </div>
 
   <div class="statistiek">
     <strong id="nieuweMeldingen">0</strong>
-    <span>Nieuw – nog te melden</span>
+    <span>Nog niet gemeld bij gemeente (zonder MOR-nummer)</span>
   </div>
+
 </div>
    <button id="nieuweMeldingButton" type="button">➕ Nieuwe melding</button>
     <button id="logoutButton" type="button">Uitloggen</button>
