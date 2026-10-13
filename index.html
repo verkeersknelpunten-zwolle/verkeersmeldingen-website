@@ -600,6 +600,42 @@ $("annuleerMelding").addEventListener("click", () => {
   $("meldingFormulierSection").hidden = true;
   $("overzicht").hidden = false;
 });
+  $("meldingFormulier").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const formulierStatus = $("meldingFormulierStatus");
+  formulierStatus.textContent = "Melding wordt opgeslagen...";
+
+  const { data: { user }, error: gebruikerFout } =
+    await supabase.auth.getUser();
+
+  if (gebruikerFout || !user) {
+    formulierStatus.textContent = "Je bent niet ingelogd.";
+    return;
+  }
+
+  const { error } = await supabase
+    .from("meldingen")
+    .insert({
+      locatie: $("meldingLocatie").value.trim(),
+      omschrijving: $("meldingOmschrijving").value.trim(),
+      maps_link: $("meldingMapsLink").value.trim(),
+      meldingsdatum: $("meldingDatum").value,
+      aangemaakt_door: user.id
+    });
+
+  if (error) {
+    formulierStatus.textContent =
+      "Opslaan mislukt: " + error.message;
+    return;
+  }
+
+  $("meldingFormulier").reset();
+  formulierStatus.textContent = "";
+  toon("overzicht");
+  await laadMeldingen();
+  status("De nieuwe melding is opgeslagen.");
+});
   supabase.auth.onAuthStateChange((event) => {
     if (event === "PASSWORD_RECOVERY") {
       recoveryMode = true;
