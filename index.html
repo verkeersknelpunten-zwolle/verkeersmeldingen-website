@@ -487,7 +487,7 @@ if (pano && locatie && kijkrichting && kanteling) {
   nieuweLink.searchParams.set("pitch", String(pitch));
   nieuweLink.searchParams.set("fov", "90");
 
-  link.href = nieuweLink.toString();
+  link.href = origineleLink;
 } else {
   link.href = origineleLink;
 }
