@@ -782,8 +782,9 @@ $("loginForm").addEventListener("submit", async e => {
 });
 
 $("annuleerMelding").addEventListener("click", () => {
-  $("meldingFormulierSection").hidden = true;
-  $("overzicht").hidden = false;
+  $("meldingFormulier").reset();
+  $("meldingFormulierStatus").textContent = "";
+  toon("overzicht");
 });
   $("meldingFormulier").addEventListener("submit", async (e) => {
   e.preventDefault();
