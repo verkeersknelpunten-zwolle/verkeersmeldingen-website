@@ -245,7 +245,19 @@ input, textarea, button {
   .melding-filters select {
     max-width: none;
   }
-}    
+}
+    /* Kader rondom meldingen beheren */
+.beheer-kader {
+  border: 2px solid #3285e5;
+  border-radius: 12px;
+  padding: 15px;
+  margin: 20px 0;
+}
+
+.beheer-kader h3 {
+  color: #174b70;
+  margin: 0 0 18px 0;
+}
 </style>
 </head>
 <body>
@@ -341,7 +353,9 @@ input, textarea, button {
   </div>
 
 </div>
-   <button id="nieuweMeldingButton" type="button">➕ Nieuwe melding</button>
+   <div class="beheer-kader">
+  <h3>Meldingen beheren</h3>
+     <button id="nieuweMeldingButton" type="button">➕ Nieuwe melding</button>
     <button id="logoutButton" type="button">Uitloggen</button>
 
 <label for="zoeken">Zoeken op straatnaam of MOR-nummer</label>
@@ -371,7 +385,8 @@ input, textarea, button {
 <option value="mor-zonder-boven">MOR-nummer – zonder nummer bovenaan</option>
 <option value="mor-zonder-onder">MOR-nummer – zonder nummer onderaan</option>
   </select>
-</div>    
+</div>
+</div>
 <div id="meldingen"></div>
   </section>
 
