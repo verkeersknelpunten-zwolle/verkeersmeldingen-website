@@ -808,11 +808,14 @@ $("loginForm").addEventListener("submit", async e => {
   });
 
   $("nieuweMeldingButton").addEventListener("click", () => {
-  toon("meldingFormulierSectie");
+  meldingInBewerking = null;
+  $("meldingFormulier").reset();
   $("meldingFormulierStatus").textContent = "";
+  toon("meldingFormulierSectie");
 });
 
 $("annuleerMelding").addEventListener("click", () => {
+  meldingInBewerking = null;
   $("meldingFormulier").reset();
   $("meldingFormulierStatus").textContent = "";
   toon("overzicht");
