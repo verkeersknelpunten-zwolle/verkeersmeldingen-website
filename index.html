@@ -647,6 +647,7 @@ if (magBewerken) {
   e.stopPropagation();
 
   meldingInBewerking = melding.id;
+  $("meldingFormulierTitel").textContent = "Melding bewerken";
 
   $("meldingLocatie").value = melding.locatie || "";
   $("meldingOmschrijving").value = melding.omschrijving || "";
