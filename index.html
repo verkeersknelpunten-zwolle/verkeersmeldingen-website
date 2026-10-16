@@ -405,6 +405,7 @@ input, textarea, button {
   const $ = id => document.getElementById(id);
   let recoveryMode = false;
   let alleMeldingen = [];
+  let meldingInBewerking = null;
   let ingelogdeGebruiker = null;
 
   function filterEnSorteerMeldingen() {
