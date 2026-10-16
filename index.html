@@ -367,8 +367,17 @@ input, textarea, button {
 </div>
    <div class="beheer-kader">
   <h3>Meldingen beheren</h3>
-     <button id="nieuweMeldingButton" type="button">➕ Nieuwe melding</button>
-    <button id="logoutButton" type="button">Uitloggen</button>
+     <div style="display:flex; gap:10px; margin-bottom:20px;">
+  <button id="nieuweMeldingButton" type="button"
+    style="flex:1; white-space:nowrap;">
+    <span style="color:white;">✚</span> Melden
+  </button>
+
+  <button id="logoutButton" type="button"
+    style="flex:1; white-space:nowrap;">
+    Uitloggen
+  </button>
+</div>
 
 <label for="zoeken">Zoeken op straatnaam of MOR-nummer</label>
 <input
