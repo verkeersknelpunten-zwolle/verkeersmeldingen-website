@@ -831,15 +831,39 @@ $("annuleerMelding").addEventListener("click", () => {
     return;
   }
 
-  const { error } = await supabase
+  const gegevens = {
+  locatie: $("meldingLocatie").value.trim(),
+  omschrijving: $("meldingOmschrijving").value.trim(),
+  maps_link: $("meldingMapsLink").value.trim(),
+  meldingsdatum: $("meldingDatum").value
+};
+
+let error;
+
+if (meldingInBewerking !== null) {
+  const resultaat = await supabase
+    .from("meldingen")
+    .update(gegevens)
+    .eq("id", meldingInBewerking)
+    .select("id");
+
+  error = resultaat.error;
+
+  if (!error && (!resultaat.data || resultaat.data.length === 0)) {
+    formulierStatus.textContent =
+      "Bewerken niet toegestaan of melding niet gevonden.";
+    return;
+  }
+} else {
+  const resultaat = await supabase
     .from("meldingen")
     .insert({
-      locatie: $("meldingLocatie").value.trim(),
-      omschrijving: $("meldingOmschrijving").value.trim(),
-      maps_link: $("meldingMapsLink").value.trim(),
-      meldingsdatum: $("meldingDatum").value,
+      ...gegevens,
       aangemaakt_door: user.id
     });
+
+  error = resultaat.error;
+}
 
   if (error) {
     formulierStatus.textContent =
