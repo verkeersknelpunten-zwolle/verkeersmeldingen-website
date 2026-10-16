@@ -872,6 +872,7 @@ if (meldingInBewerking !== null) {
   }
 
   $("meldingFormulier").reset();
+  meldingInBewerking = null;
   formulierStatus.textContent = "";
   toon("overzicht");
   await laadMeldingen();
