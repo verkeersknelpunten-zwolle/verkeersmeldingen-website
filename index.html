@@ -526,6 +526,8 @@ $("sorteerFilter").addEventListener("change", filterEnSorteerMeldingen);
   }
 
     async function laadMeldingen() {
+      const { data: { user } } = await supabase.auth.getUser();
+      ingelogdeGebruiker = user;
     const { data, error } = await supabase
       .from("meldingen")
       .select("*");
@@ -629,6 +631,24 @@ statusRegels.className = "status-regels";
 
 statusRegels.append(gemeente, rijscholen);
 kop.appendChild(statusRegels);
+const magBewerken =
+  ingelogdeGebruiker &&
+  (
+    melding.aangemaakt_door === ingelogdeGebruiker.id ||
+    ingelogdeGebruiker.id === "d7c530e0-126c-443a-a7dc-53d262c78c56"
+  );
+if (magBewerken) {
+  const bewerkKnop = document.createElement("button");
+  bewerkKnop.type = "button";
+  bewerkKnop.textContent = "✏️ Bewerken";
+
+  bewerkKnop.addEventListener("click", (e) => {
+    e.stopPropagation();
+    alert("De bewerkfunctie wordt binnenkort toegevoegd.");
+  });
+
+  kop.appendChild(bewerkKnop);
+}      
 const details = document.createElement("div");
 
 const velden = [
