@@ -862,6 +862,9 @@ $("annuleerMelding").addEventListener("click", () => {
 let error;
 
 if (meldingInBewerking !== null) {
+  gegevens.status_gemeente = $("meldingStatusGemeente").value;
+  gegevens.status_rijscholen = $("meldingStatusRijscholen").value;
+
   const resultaat = await supabase
     .from("meldingen")
     .update(gegevens)
