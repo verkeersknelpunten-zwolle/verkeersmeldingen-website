@@ -808,8 +808,9 @@ $("loginForm").addEventListener("submit", async e => {
     status("Je bent uitgelogd.");
   });
 
-  $("nieuweMeldingButton").addEventListener("click", () => {
+$("nieuweMeldingButton").addEventListener("click", () => {
   meldingInBewerking = null;
+  $("meldingFormulierTitel").textContent = "Nieuwe verkeersmelding";
   $("meldingFormulier").reset();
   $("meldingFormulierStatus").textContent = "";
   toon("meldingFormulierSectie");
