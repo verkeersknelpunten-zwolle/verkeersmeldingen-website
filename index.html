@@ -643,58 +643,18 @@ if (magBewerken) {
   bewerkKnop.type = "button";
   bewerkKnop.textContent = "✏️ Bewerken";
 
- bewerkKnop.addEventListener("click", async (e) => {
+ bewerkKnop.addEventListener("click", (e) => {
   e.stopPropagation();
 
-  const nieuweGemeenteStatus = prompt(
-    "Status gemeente:\nNiet gemeld / Open / Afgehandeld",
-    melding.status_gemeente || "Niet gemeld"
-  );
+  meldingInBewerking = melding.id;
 
-  if (nieuweGemeenteStatus === null) return;
+  $("meldingLocatie").value = melding.locatie || "";
+  $("meldingOmschrijving").value = melding.omschrijving || "";
+  $("meldingMapsLink").value = melding.maps_link || "";
+  $("meldingDatum").value = melding.meldingsdatum || "";
 
-  const gemeenteKeuzes = ["Niet gemeld", "Open", "Afgehandeld"];
-
-  if (!gemeenteKeuzes.includes(nieuweGemeenteStatus.trim())) {
-    alert("Ongeldige status gemeente.");
-    return;
-  }
-
-  const nieuweRijschoolStatus = prompt(
-    "Status rijscholen:\nNog te beoordelen / Open / Opgelost",
-    melding.status_rijscholen || "Open"
-  );
-
-  if (nieuweRijschoolStatus === null) return;
-
-  const rijschoolKeuzes = ["Nog te beoordelen", "Open", "Opgelost"];
-
-  if (!rijschoolKeuzes.includes(nieuweRijschoolStatus.trim())) {
-    alert("Ongeldige status rijscholen.");
-    return;
-  }
-
-  const { data, error } = await supabase
-    .from("meldingen")
-    .update({
-      status_gemeente: nieuweGemeenteStatus.trim(),
-      status_rijscholen: nieuweRijschoolStatus.trim()
-    })
-    .eq("id", melding.id)
-    .select("id");
-
-  if (error) {
-    alert("Opslaan mislukt: " + error.message);
-    return;
-  }
-
-  if (!data || data.length === 0) {
-    alert("Opslaan niet toegestaan of melding niet gevonden.");
-    return;
-  }
-
-  alert("De statussen zijn opgeslagen.");
-  await laadMeldingen();
+  $("meldingFormulierStatus").textContent = "";
+  toon("meldingFormulierSectie");
 });
 
   kop.appendChild(bewerkKnop);
