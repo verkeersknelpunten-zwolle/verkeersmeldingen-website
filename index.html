@@ -405,6 +405,7 @@ input, textarea, button {
   const $ = id => document.getElementById(id);
   let recoveryMode = false;
   let alleMeldingen = [];
+  let ingelogdeGebruiker = null;
 
   function filterEnSorteerMeldingen() {
   const zoekterm = $("zoeken").value.toLowerCase().trim();
