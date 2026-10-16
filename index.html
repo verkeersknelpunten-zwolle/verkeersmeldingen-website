@@ -883,7 +883,7 @@ if (meldingInBewerking !== null) {
   formulierStatus.textContent = "";
   toon("overzicht");
   await laadMeldingen();
-  status("De nieuwe melding is opgeslagen.");
+  status("De melding is succesvol opgeslagen.");
 });
   supabase.auth.onAuthStateChange((event) => {
     if (event === "PASSWORD_RECOVERY") {
