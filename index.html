@@ -560,6 +560,24 @@ $("sorteerFilter").addEventListener("change", filterEnSorteerMeldingen);
     }
 
     alleMeldingen = data ?? [];
+      const { data: gebruikers, error: gebruikersFout } = await supabase
+  .from("toegestane_gebruikers")
+  .select("gebruiker_id, Naam");
+
+if (gebruikersFout) {
+  console.error("Namen ophalen mislukt:", gebruikersFout.message);
+}
+
+const namenPerGebruiker = {};
+
+(gebruikers || []).forEach(gebruiker => {
+  namenPerGebruiker[gebruiker.gebruiker_id] = gebruiker.Naam;
+});
+
+alleMeldingen.forEach(melding => {
+  melding.naam_rijschool =
+    namenPerGebruiker[melding.aangemaakt_door] || "Onbekende rijschool";
+});
       const totaal = alleMeldingen.length;
       const totaalGemeente = alleMeldingen.filter(melding =>
   String(melding.mor_nummer ?? "").trim() !== ""
@@ -722,7 +740,8 @@ const velden = [
   ["Meldingsdatum", melding.meldingsdatum],
   ["Reactie gemeente", melding.reactie_gemeente],
   ["Opmerking", melding.opmerking],
-  ["Laatst gecontroleerd", melding.laatst_gecontroleerd]
+  ["Laatst gecontroleerd", melding.laatst_gecontroleerd],
+  ["Gemeld door", melding.naam_rijschool]
 ];
 
 for (const [naam, waarde] of velden) {
