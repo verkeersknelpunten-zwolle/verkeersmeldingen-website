@@ -649,7 +649,7 @@ div.appendChild(kop);
 
       const rijscholen = document.createElement("p");
       rijscholen.textContent =
-        "Status rijscholen: " +
+        (window.innerWidth <= 600 ? "Rijscholen: " : "Status rijscholen: ") +
         (melding.status_rijscholen || "Onbekend");
       if (melding.status_gemeente !== "Niet gemeld" && melding.meldingsdatum) {
   const dagenRijscholen = berekenDagen(
