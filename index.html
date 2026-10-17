@@ -633,7 +633,7 @@ div.appendChild(kop);
 }
       const gemeente = document.createElement("p");
       gemeente.textContent =
-        "Status gemeente: " +
+        (window.innerWidth <= 600 ? "Gemeente: " : "Status gemeente: ") +
         (melding.status_gemeente || "Onbekend");
       if (melding.status_gemeente !== "Niet gemeld" && melding.meldingsdatum) {
   const dagenGemeente = berekenDagen(
