@@ -716,7 +716,6 @@ if (magBewerken) {
   toon("meldingFormulierSectie");
 });
 
-  div.appendChild(bewerkKnop);
 }      
 const details = document.createElement("div");
 
@@ -797,7 +796,8 @@ link.addEventListener("click", e => e.stopPropagation());
 
   details.appendChild(pdfKnop);
 }
-lijst.appendChild(div);
+  if (magBewerken) details.appendChild(bewerkKnop);
+      lijst.appendChild(div);
   }
 }
 $("loginForm").addEventListener("submit", async e => {
