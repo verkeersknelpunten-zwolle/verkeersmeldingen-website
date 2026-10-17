@@ -621,6 +621,16 @@ div.appendChild(kop);
         (melding.mor_nummer || "Geen MOR-nummer") +
         " – " + (melding.locatie || "Locatie onbekend");
 
+      function berekenDagen(startdatum, einddatum) {
+  if (!startdatum) return null;
+
+  const start = new Date(startdatum + "T12:00:00");
+  const einde = einddatum
+  ? new Date(einddatum + "T12:00:00")
+  : new Date();
+
+  return Math.max(0, Math.round((einde - start) / 86400000));
+}
       const gemeente = document.createElement("p");
       gemeente.textContent =
         "Status gemeente: " +
