@@ -635,6 +635,17 @@ div.appendChild(kop);
       gemeente.textContent =
         "Status gemeente: " +
         (melding.status_gemeente || "Onbekend");
+      if (melding.status_gemeente !== "Niet gemeld" && melding.meldingsdatum) {
+  const dagenGemeente = berekenDagen(
+    melding.meldingsdatum,
+    melding.datum_afgehandeld_gemeente
+  );
+
+  if (melding.status_gemeente !== "Afgehandeld" ||
+      melding.datum_afgehandeld_gemeente) {
+    gemeente.textContent += " · " + dagenGemeente + " dgn";
+  }
+}
 
       const rijscholen = document.createElement("p");
       rijscholen.textContent =
