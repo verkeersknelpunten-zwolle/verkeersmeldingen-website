@@ -651,6 +651,17 @@ div.appendChild(kop);
       rijscholen.textContent =
         "Status rijscholen: " +
         (melding.status_rijscholen || "Onbekend");
+      if (melding.status_gemeente !== "Niet gemeld" && melding.meldingsdatum) {
+  const dagenRijscholen = berekenDagen(
+    melding.meldingsdatum,
+    melding.datum_opgelost_rijscholen
+  );
+
+  if (melding.status_rijscholen !== "Opgelost" ||
+      melding.datum_opgelost_rijscholen) {
+    rijscholen.textContent += " · " + dagenRijscholen + " dgn";
+  }
+}
       function geefStatusKleur(element, waarde) {
         const statusTekst = String(waarde || "Onbekend")
           .trim()
