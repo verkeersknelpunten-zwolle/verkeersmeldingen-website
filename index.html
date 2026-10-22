@@ -624,7 +624,7 @@ $("opgelosteMeldingen").textContent =
     filterEnSorteerMeldingen();
   }
 
-  function toonMeldingen(meldingen) {
+  async function toonMeldingen(meldingen) {
     meldingen = [...meldingen];
     const lijst = $("meldingen");
     lijst.replaceChildren();
@@ -801,8 +801,24 @@ link.addEventListener("click", e => e.stopPropagation());
         }
 const oplossingen = document.createElement("details");
 oplossingen.className = "oplossingen-kader";
-oplossingen.innerHTML = "<summary>💡 Oplossingen</summary><p>Hier komen de voorgestelde oplossingen.</p>";
-details.appendChild(oplossingen);    
+oplossingen.innerHTML = "<summary>💡 Oplossingen</summary><div class='oplossingen-lijst'></div>";
+details.appendChild(oplossingen);
+      const { data: gevondenOplossingen, error: oplossingenFout } = await supabase
+  .from("oplossingen")
+  .select("omschrijving")
+  .eq("melding_id", melding.id)
+  .order("created_at", { ascending: true });
+      const oplossingenLijst = oplossingen.querySelector(".oplossingen-lijst");
+
+if (oplossingenFout) {
+  oplossingenLijst.textContent = "Oplossingen konden niet worden geladen.";
+} else {
+  (gevondenOplossingen || []).forEach(oplossing => {
+    const regel = document.createElement("p");
+    regel.textContent = oplossing.omschrijving;
+    oplossingenLijst.appendChild(regel);
+  });
+}
       if (melding.reactie_pdf) {
   const pdfKnop = document.createElement("button");
   pdfKnop.textContent = "📄 Bekijk reactie gemeente";
