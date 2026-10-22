@@ -275,7 +275,7 @@ header .header-cijfers {
   <h1>Verkeersknelpunten Zwolle</h1>
   <p>Samen zien we meer op de weg.</p>
   <p class="header-cijfers"><strong>100+ rijinstructeurs</strong> | <strong>6 miljoen+ kilometer per jaar door Zwolle</strong></p>
-  <p>Samen met de gemeente Zwolle en het CBR gaan we voor goede en veilige oplossingen.</p>
+  <p>Met de gemeente Zwolle en het CBR gaan we voor veilige wegen.</p>
 </header>
 
 <main>
@@ -844,6 +844,85 @@ if (oplossingenFout) {
 oplossingKnop.type = "button";
 oplossingKnop.textContent = "+ Oplossing toevoegen";
 oplossingen.appendChild(oplossingKnop);
+      const bestand = document.createElement("input");
+bestand.type = "file";
+bestand.accept = ".pdf,.jpg,.jpeg,.png";
+bestand.style.display = "none";
+oplossingen.appendChild(bestand);
+      const bijlageKnop = document.createElement("button");
+bijlageKnop.type = "button";
+bijlageKnop.textContent = "📎 Bijlage toevoegen";
+oplossingen.appendChild(bijlageKnop);
+      const bijlagenLijst = document.createElement("div");
+bijlagenLijst.className = "bijlagen-lijst";
+oplossingen.appendChild(bijlagenLijst);
+      const { data: opgeslagenBijlagen, error: bijlagenFout } = await supabase.storage
+  .from("oplossingen-bijlagen")
+  .list(melding.id, { limit: 100 });
+      if (bijlagenFout) {
+  bijlagenLijst.textContent = "Bijlagen konden niet worden geladen.";
+} else {
+  (opgeslagenBijlagen || []).forEach(bijlage => {
+    const regel = document.createElement("p");
+    const link = document.createElement("a");
+link.textContent = "📎 " + bijlage.name;
+link.href = "#";
+    link.addEventListener("click", async (e) => {
+  e.preventDefault();
+
+  const { data, error } = await supabase.storage
+    .from("oplossingen-bijlagen")
+    .createSignedUrl(`${melding.id}/${bijlage.name}`, 60);
+
+  if (error) {
+    alert("Bijlage openen mislukt: " + error.message);
+    return;
+  }
+
+  window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+});
+regel.appendChild(link);
+    bijlagenLijst.appendChild(regel);
+  });
+}
+      bijlageKnop.addEventListener("click", () => {
+  bestand.click();
+});
+  bestand.addEventListener("change", async () => {
+  const gekozenBestand = bestand.files[0];
+  if (!gekozenBestand) return;
+
+  const bestandsnaam = `${crypto.randomUUID()}-${gekozenBestand.name}`;
+  const opslagPad = `${melding.id}/${bestandsnaam}`;
+  const { error: uploadFout } = await supabase.storage
+  .from("oplossingen-bijlagen")
+  .upload(opslagPad, gekozenBestand);
+
+if (uploadFout) {
+  alert("Bijlage uploaden mislukt: " + uploadFout.message);
+  return;
+}
+    const regel = document.createElement("p");
+const link = document.createElement("a");
+link.textContent = "📎 " + gekozenBestand.name;
+link.href = "#";
+    link.addEventListener("click", async (e) => {
+  e.preventDefault();
+
+  const { data, error } = await supabase.storage
+    .from("oplossingen-bijlagen")
+    .createSignedUrl(opslagPad, 60);
+
+  if (error) {
+    alert("Bijlage openen mislukt: " + error.message);
+    return;
+  }
+
+  window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+});
+regel.appendChild(link);
+bijlagenLijst.appendChild(regel);
+});
       oplossingKnop.addEventListener("click", async (e) => {
   e.preventDefault();
   e.stopPropagation();
@@ -859,13 +938,15 @@ oplossingen.appendChild(oplossingKnop);
     return;
   }
 
-  const { error } = await supabase
-    .from("oplossingen")
-    .insert({
-      melding_id: melding.id,
-      omschrijving: tekst.trim(),
-      aangemaakt_door: gebruiker.id
-    });
+  const { data: nieuweOplossing, error } = await supabase
+  .from("oplossingen")
+  .insert({
+    melding_id: melding.id,
+    omschrijving: tekst.trim(),
+    aangemaakt_door: gebruiker.id
+  })
+  .select("id")
+  .single();
 
   if (error) {
     alert("Oplossing opslaan mislukt: " + error.message);
@@ -875,7 +956,8 @@ oplossingen.appendChild(oplossingKnop);
   const regel = document.createElement("p");
   regel.textContent = tekst.trim();
   oplossingenLijst.appendChild(regel);
-});      if (melding.reactie_pdf) {
+});      
+  if (melding.reactie_pdf) {
   const pdfKnop = document.createElement("button");
   pdfKnop.textContent = "📄 Bekijk reactie gemeente";
   pdfKnop.type = "button";
