@@ -819,7 +819,42 @@ if (oplossingenFout) {
     oplossingenLijst.appendChild(regel);
   });
 }
-      if (melding.reactie_pdf) {
+      const oplossingKnop = document.createElement("button");
+oplossingKnop.type = "button";
+oplossingKnop.textContent = "➕ Oplossing toevoegen";
+oplossingen.appendChild(oplossingKnop);
+      oplossingKnop.addEventListener("click", async (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+
+  const tekst = prompt("Beschrijf de voorgestelde oplossing:");
+  if (!tekst || !tekst.trim()) return;
+
+  const { data: gebruikerData } = await supabase.auth.getUser();
+  const gebruiker = gebruikerData?.user;
+
+  if (!gebruiker) {
+    alert("Je moet ingelogd zijn.");
+    return;
+  }
+
+  const { error } = await supabase
+    .from("oplossingen")
+    .insert({
+      melding_id: melding.id,
+      omschrijving: tekst.trim(),
+      aangemaakt_door: gebruiker.id
+    });
+
+  if (error) {
+    alert("Oplossing opslaan mislukt: " + error.message);
+    return;
+  }
+
+  const regel = document.createElement("p");
+  regel.textContent = tekst.trim();
+  oplossingenLijst.appendChild(regel);
+});      if (melding.reactie_pdf) {
   const pdfKnop = document.createElement("button");
   pdfKnop.textContent = "📄 Bekijk reactie gemeente";
   pdfKnop.type = "button";
