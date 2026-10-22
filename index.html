@@ -891,7 +891,7 @@ oplossingen.appendChild(bijlagenLijst);
   (opgeslagenBijlagen || []).forEach(bijlage => {
     const regel = document.createElement("p");
     const link = document.createElement("a");
-link.textContent = "📎 " + bijlage.name;
+link.textContent = "📎 " + bijlage.name.replace(/^[0-9a-f-]{36}-/, "");
 link.href = "#";
     link.addEventListener("click", async (e) => {
   e.preventDefault();
