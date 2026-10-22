@@ -703,7 +703,6 @@ div.appendChild(kop);
         (window.innerWidth <= 600 ? "Gemeente: " : "Status gemeente: ") +
         (melding.status_gemeente || "Onbekend");
       
-gemeente.style.color = melding.status_gemeente === "Afgehandeld" ? "#166534" : "";
 
 if (melding.status_gemeente !== "Niet gemeld" && melding.meldingsdatum) {
   const dagenGemeente = berekenDagen(
