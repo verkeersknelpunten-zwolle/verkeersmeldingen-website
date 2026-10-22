@@ -1016,11 +1016,19 @@ reactieBestand.addEventListener("change", async () => {
   alert("Gemeentereactie toegevoegd! Vernieuw de pagina.");
 });
 
-details.appendChild(reactieKnop);
-details.appendChild(reactieBestand);
-  const reactiesLijst = document.createElement("div");
-details.appendChild(reactiesLijst);
+const reactieKader = document.createElement("div");
+reactieKader.style.border = "2px solid #005A9C";
+reactieKader.style.borderRadius = "8px";
+reactieKader.style.padding = "12px";
+reactieKader.style.marginTop = "12px";
 
+reactieKader.appendChild(reactieKnop);
+reactieKader.appendChild(reactieBestand);
+
+const reactiesLijst = document.createElement("div");
+reactieKader.appendChild(reactiesLijst);
+
+details.appendChild(reactieKader);
 const { data: gemeenteReacties, error: lijstFout } =
   await supabase.storage
     .from("gemeente-reacties")
