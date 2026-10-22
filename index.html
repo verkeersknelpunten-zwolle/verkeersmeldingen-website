@@ -310,6 +310,8 @@ header .header-cijfers {
   <form id="meldingFormulier">
     <label for="meldingLocatie">Locatie *</label>
     <input id="meldingLocatie" type="text" required>
+    <label for="meldingMorNummer">MOR-nummer</label>
+    <input id="meldingMorNummer" type="text">
 
     <label for="meldingOmschrijving">Omschrijving *</label>
     <textarea id="meldingOmschrijving" required
@@ -770,6 +772,7 @@ if (magBewerken) {
   $("meldingOpslaanKnop").textContent = "Wijzigingen opslaan";
 
   $("meldingLocatie").value = melding.locatie || "";
+  $("meldingMorNummer").value = melding.mor_nummer || "";
   $("meldingOmschrijving").value = melding.omschrijving || "";
   $("meldingMapsLink").value = melding.maps_link || "";
   $("meldingDatum").value = melding.meldingsdatum || "";
@@ -1098,6 +1101,7 @@ $("annuleerMelding").addEventListener("click", () => {
 
   const gegevens = {
   locatie: $("meldingLocatie").value.trim(),
+  mor_nummer: $("meldingMorNummer").value.trim() || null,
   omschrijving: $("meldingOmschrijving").value.trim(),
   maps_link: $("meldingMapsLink").value.trim(),
   meldingsdatum: $("meldingDatum").value
