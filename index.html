@@ -980,7 +980,83 @@ bijlagenLijst.appendChild(regel);
   const regel = document.createElement("p");
   regel.textContent = tekst.trim();
   oplossingenLijst.appendChild(regel);
-});      
+});
+  const reactieKnop = document.createElement("button");
+reactieKnop.type = "button";
+reactieKnop.textContent = "📄 Reactie gemeente toevoegen";
+
+const reactieBestand = document.createElement("input");
+reactieBestand.type = "file";
+reactieBestand.accept = ".pdf,application/pdf";
+reactieBestand.style.display = "none";
+
+reactieKnop.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  reactieBestand.click();
+});
+
+reactieBestand.addEventListener("change", async () => {
+  const bestand = reactieBestand.files[0];
+  if (!bestand) return;
+
+  const opslagPad = `${melding.id}/${crypto.randomUUID()}-${bestand.name}`;
+
+  const { error } = await supabase.storage
+    .from("gemeente-reacties")
+    .upload(opslagPad, bestand);
+
+  if (error) {
+    alert("Uploaden mislukt: " + error.message);
+    return;
+  }
+
+  alert("Gemeentereactie toegevoegd! Vernieuw de pagina.");
+});
+
+details.appendChild(reactieKnop);
+details.appendChild(reactieBestand);
+  const reactiesLijst = document.createElement("div");
+details.appendChild(reactiesLijst);
+
+const { data: gemeenteReacties, error: lijstFout } =
+  await supabase.storage
+    .from("gemeente-reacties")
+    .list(String(melding.id), { limit: 100 });
+
+if (!lijstFout && gemeenteReacties) {
+  for (const reactie of gemeenteReacties) {
+    if (!reactie.name.toLowerCase().endsWith(".pdf")) continue;
+
+    const link = document.createElement("a");
+    link.href = "#";
+    link.textContent = "📄 " +
+      reactie.name.replace(/^[0-9a-f-]{36}-/, "");
+
+    link.addEventListener("click", async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const { data, error } = await supabase.storage
+        .from("gemeente-reacties")
+        .createSignedUrl(
+          `${melding.id}/${reactie.name}`,
+          60
+        );
+
+      if (error) {
+        alert("PDF openen mislukt: " + error.message);
+        return;
+      }
+
+      window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+    });
+
+    const regel = document.createElement("p");
+    regel.appendChild(link);
+    reactiesLijst.appendChild(regel);
+  }
+}
   if (melding.reactie_pdf) {
   const pdfKnop = document.createElement("button");
   pdfKnop.textContent = "📄 Bekijk reactie gemeente";
