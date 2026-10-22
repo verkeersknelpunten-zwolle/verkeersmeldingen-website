@@ -701,7 +701,10 @@ div.appendChild(kop);
       gemeente.textContent =
         (window.innerWidth <= 600 ? "Gemeente: " : "Status gemeente: ") +
         (melding.status_gemeente || "Onbekend");
-      if (melding.status_gemeente !== "Niet gemeld" && melding.meldingsdatum) {
+      
+gemeente.style.color = melding.status_gemeente === "Afgehandeld" ? "#166534" : "";
+
+if (melding.status_gemeente !== "Niet gemeld" && melding.meldingsdatum) {
   const dagenGemeente = berekenDagen(
     melding.meldingsdatum,
     melding.datum_afgehandeld_gemeente
@@ -717,7 +720,7 @@ div.appendChild(kop);
       rijscholen.textContent =
         (window.innerWidth <= 600 ? "Rijscholen: " : "Status rijscholen: ") +
         (melding.status_rijscholen || "Onbekend");
-      if (melding.status_gemeente !== "Niet gemeld" && melding.meldingsdatum) {
+      if (melding.status_rijscholen !== "Nog te beoordelen" && melding.meldingsdatum) {
   const dagenRijscholen = berekenDagen(
     melding.meldingsdatum,
     melding.datum_opgelost_rijscholen
