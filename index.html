@@ -388,6 +388,10 @@ header .header-cijfers {
     Uitloggen
   </button>
 </div>
+     <label style="display:block; margin-bottom:12px;">
+  <input type="checkbox" id="verbergAfgehandeld">
+  Verberg volledig afgehandelde meldingen
+</label>
 
 <label for="zoeken" style="display:block; margin-bottom:8px;">
   Zoeken op straatnaam of MOR-nummer
@@ -446,6 +450,7 @@ header .header-cijfers {
   const zoekterm = $("zoeken").value.toLowerCase().trim();
   const statusFilter = $("statusFilter").value;
   const sorteerFilter = $("sorteerFilter").value;
+  const verbergAfgehandeld = $("verbergAfgehandeld").checked;
 
   const heeftMor = melding =>
     String(melding.mor_nummer ?? "").trim() !== "";
@@ -462,6 +467,13 @@ header .header-cijfers {
       String(melding.locatie ?? "").toLowerCase().includes(zoekterm);
 
     if (!gevonden) return false;
+    if (
+  verbergAfgehandeld &&
+  statusGemeente(melding) === "afgehandeld" &&
+  statusRijscholen(melding) === "opgelost"
+) {
+  return false;
+}
 
     switch (statusFilter) {
       case "niet-gemeld":
@@ -526,6 +538,7 @@ header .header-cijfers {
 $("zoeken").addEventListener("input", filterEnSorteerMeldingen);
 $("statusFilter").addEventListener("change", filterEnSorteerMeldingen);
 $("sorteerFilter").addEventListener("change", filterEnSorteerMeldingen);
+$("verbergAfgehandeld").addEventListener("change", filterEnSorteerMeldingen);
   function status(tekst, fout = false) {
     $("status").textContent = tekst;
     $("status").className = fout ? "fout" : "";
