@@ -796,7 +796,10 @@ if (pano && locatie && kijkrichting && kanteling) {
 link.addEventListener("click", e => e.stopPropagation());
   div.insertBefore(link, details);
         }
-    if (melding.reactie_pdf) {
+   const oplossingen = document.createElement("details");
+oplossingen.innerHTML = "<summary>💡 Oplossingen</summary><p>Hier komen de voorgestelde oplossingen.</p>";
+details.appendChild(oplossingen);    
+      if (melding.reactie_pdf) {
   const pdfKnop = document.createElement("button");
   pdfKnop.textContent = "📄 Bekijk reactie gemeente";
   pdfKnop.type = "button";
