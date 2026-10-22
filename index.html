@@ -407,6 +407,7 @@ header .header-cijfers {
     <option value="gemeente-afgehandeld">Afgehandeld door gemeente</option>
     <option value="rijscholen-open">Nog open volgens rijscholen</option>
     <option value="rijscholen-opgelost">Afgehandeld volgens rijscholen</option>
+    <option value="met-oplossing">Alleen meldingen met oplossingen</option>
   </select>
 
   <label for="sorteerFilter">Sorteren op</label>
@@ -473,6 +474,8 @@ header .header-cijfers {
         return heeftMor(melding) && statusRijscholen(melding) === "open";
       case "rijscholen-opgelost":
         return heeftMor(melding) && statusRijscholen(melding) === "opgelost";
+      case "met-oplossing":
+        return (melding.aantal_oplossingen || 0) > 0;
       default:
         return true;
     }
@@ -572,6 +575,21 @@ $("sorteerFilter").addEventListener("change", filterEnSorteerMeldingen);
     }
 
     alleMeldingen = data ?? [];
+      const { data: oplossingenData, error: oplossingenFout } = await supabase
+  .from("oplossingen")
+  .select("melding_id");
+
+if (oplossingenFout) {
+  console.error("Oplossingen ophalen mislukt:", oplossingenFout.message);
+}
+
+const meldingenMetOplossing = new Set(
+  (oplossingenData || []).map(oplossing => oplossing.melding_id)
+);
+
+alleMeldingen.forEach(melding => {
+  melding.aantal_oplossingen = meldingenMetOplossing.has(melding.id) ? 1 : 0;
+});
       const { data: gebruikers, error: gebruikersFout } = await supabase
   .from("toegestane_gebruikers")
   .select("gebruiker_id, Naam");
