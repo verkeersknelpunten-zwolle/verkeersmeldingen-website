@@ -388,10 +388,6 @@ header .header-cijfers {
     Uitloggen
   </button>
 </div>
-     <label style="display:block; margin-bottom:12px;">
-  <input type="checkbox" id="verbergAfgehandeld">
-  Verberg volledig afgehandelde meldingen
-</label>
 
 <label for="zoeken" style="display:block; margin-bottom:8px;">
   Zoeken op straatnaam of MOR-nummer
@@ -423,6 +419,13 @@ header .header-cijfers {
 <option value="mor-zonder-boven">MOR-nummer – zonder nummer bovenaan</option>
 <option value="mor-zonder-onder">MOR-nummer – zonder nummer onderaan</option>
   </select>
+  <label style="font-weight:bold; display:block; margin-top:12px;">
+  Verberg volledig afgehandelde meldingen
+</label>
+<label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+  <input type="checkbox" id="verbergAfgehandeld" style="width:22px; height:22px; accent-color:#005A9C;">
+  Ja, verberg deze meldingen
+</label>
 </div>
 </div>
 <div id="meldingen"></div>
