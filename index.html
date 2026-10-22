@@ -822,7 +822,7 @@ link.addEventListener("click", e => e.stopPropagation());
         }
 const oplossingen = document.createElement("details");
 oplossingen.className = "oplossingen-kader";
-oplossingen.innerHTML = "<summary>💡 Oplossingen</summary><div class='oplossingen-lijst'></div>";
+oplossingen.innerHTML = "<summary>💡 Informatie en oplossingen</summary><div class='oplossingen-lijst'></div>";
 details.appendChild(oplossingen);
       const { data: gevondenOplossingen, error: oplossingenFout } = await supabase
   .from("oplossingen")
@@ -842,7 +842,7 @@ if (oplossingenFout) {
 }
       const oplossingKnop = document.createElement("button");
 oplossingKnop.type = "button";
-oplossingKnop.textContent = "+ Oplossing toevoegen";
+oplossingKnop.textContent = "+ Informatie of oplossing toevoegen";
 oplossingen.appendChild(oplossingKnop);
       const bestand = document.createElement("input");
 bestand.type = "file";
